@@ -16,12 +16,13 @@ const formatSalary = (min, max) => {
   return `₹${fmt(min || max)}`;
 };
 
-const JobCard = ({ job }) => {
+const JobCard = ({ job, appliedJobIds, onApplied }) => {
   const { t } = useTranslation();
   const { formatRelativeDate } = useFormatters();
   const [applyOpen, setApplyOpen] = useState(false);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const canApply = isAuthenticated && user?.role === ROLES.JOB_SEEKER;
+  const hasApplied = Boolean(appliedJobIds?.has(job._id));
   const salary = formatSalary(job.salaryMin, job.salaryMax);
 
   return (
@@ -94,15 +95,27 @@ const JobCard = ({ job }) => {
               {t("jobs.viewDetails")}
             </Button>
           </Link>
-          {canApply && (
-            <Button size="sm" onClick={() => setApplyOpen(true)}>
-              {t("jobs.apply")}
-            </Button>
-          )}
+          {canApply &&
+            (hasApplied ? (
+              <Button size="sm" variant="secondary" disabled>
+                {t("jobDetails.alreadyApplied")}
+              </Button>
+            ) : (
+              <Button size="sm" onClick={() => setApplyOpen(true)}>
+                {t("jobs.apply")}
+              </Button>
+            ))}
         </div>
       </div>
 
-      {canApply && <ApplyModal open={applyOpen} onClose={() => setApplyOpen(false)} job={job} />}
+      {canApply && (
+        <ApplyModal
+          open={applyOpen}
+          onClose={() => setApplyOpen(false)}
+          job={job}
+          onApplied={() => onApplied?.(job._id)}
+        />
+      )}
     </div>
   );
 };

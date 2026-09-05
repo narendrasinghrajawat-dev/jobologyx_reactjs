@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { SearchX } from "lucide-react";
 import { fetchJobs } from "../../store/slices/jobSlice";
 import { useDebounce } from "../../hooks/useDebounce";
+import { useAppliedJobIds } from "../../features/applications/useAppliedJobIds";
 import JobFilters from "../../components/jobs/JobFilters";
 import JobCard from "../../components/jobs/JobCard";
 import { JobCardSkeleton } from "../../components/common/Skeleton";
@@ -28,6 +29,7 @@ const JobsPage = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { jobs, pagination, loading, error } = useSelector((state) => state.jobs);
+  const { appliedJobIds, markApplied } = useAppliedJobIds();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [filters, setFiltersState] = useState(() => ({
@@ -99,7 +101,7 @@ const JobsPage = () => {
         <>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {jobs.map((job) => (
-              <JobCard key={job._id} job={job} />
+              <JobCard key={job._id} job={job} appliedJobIds={appliedJobIds} onApplied={markApplied} />
             ))}
           </div>
           <div className="mt-8">

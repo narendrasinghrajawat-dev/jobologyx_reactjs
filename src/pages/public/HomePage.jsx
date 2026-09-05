@@ -18,6 +18,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { fetchJobs } from "../../store/slices/jobSlice";
+import { useAppliedJobIds } from "../../features/applications/useAppliedJobIds";
 import JobCard from "../../components/jobs/JobCard";
 import { JobCardSkeleton } from "../../components/common/Skeleton";
 import Button from "../../components/common/Button";
@@ -48,6 +49,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { jobs, loading } = useSelector((state) => state.jobs);
+  const { appliedJobIds, markApplied } = useAppliedJobIds();
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -117,7 +119,9 @@ const HomePage = () => {
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {loading
               ? Array.from({ length: 6 }).map((_, i) => <JobCardSkeleton key={i} />)
-              : jobs.map((job) => <JobCard key={job._id} job={job} />)}
+              : jobs.map((job) => (
+                  <JobCard key={job._id} job={job} appliedJobIds={appliedJobIds} onApplied={markApplied} />
+                ))}
           </div>
         </div>
       </section>
