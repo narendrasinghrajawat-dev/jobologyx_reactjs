@@ -17,6 +17,24 @@ const DASHBOARD_BY_ROLE = {
   [ROLES.ADMIN]: "/admin/dashboard",
 };
 
+const ROLE_PATH_PREFIX = {
+  [ROLES.JOB_SEEKER]: "/seeker",
+  [ROLES.RECRUITER]: "/recruiter",
+  [ROLES.ADMIN]: "/admin",
+};
+const ALL_ROLE_PREFIXES = Object.values(ROLE_PATH_PREFIX);
+
+// A logged-out visit to a protected route (or a logout that races with
+// ProtectedRoute's own redirect) can leave `location.state.from` pointing at
+// a different role's area entirely. Only honor it when it isn't scoped to
+// another role's section — otherwise fall back to this user's own dashboard.
+const resolveRedirect = (fromPath, role) => {
+  const ownPrefix = ROLE_PATH_PREFIX[role];
+  const belongsToAnotherRole = fromPath && ALL_ROLE_PREFIXES.some((p) => p !== ownPrefix && fromPath.startsWith(p));
+  if (fromPath && !belongsToAnotherRole) return fromPath;
+  return DASHBOARD_BY_ROLE[role] || "/";
+};
+
 const LoginPage = () => {
   const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +56,7 @@ const LoginPage = () => {
     try {
       const user = await login(data);
       toast.success(t("auth.login.welcomeToast"));
-      const redirectTo = location.state?.from?.pathname || DASHBOARD_BY_ROLE[user.role] || "/";
+      const redirectTo = resolveRedirect(location.state?.from?.pathname, user.role);
       navigate(redirectTo, { replace: true });
     } catch (err) {
       setApiError(err.message);
