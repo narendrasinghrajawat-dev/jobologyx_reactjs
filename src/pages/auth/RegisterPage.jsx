@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { Briefcase, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
-import { registerSchema } from "../../schemas/authSchemas";
+import { createRegisterSchema } from "../../schemas/authSchemas";
 import { useAuth } from "../../features/auth/useAuth";
 import { ROLES } from "../../utils/constants";
 import Input from "../../components/common/Input";
@@ -15,16 +16,22 @@ const DASHBOARD_BY_ROLE = {
   [ROLES.RECRUITER]: "/recruiter/dashboard",
 };
 
-const ROLE_OPTIONS = [
-  { value: ROLES.JOB_SEEKER, label: "Job Seeker", hint: "I'm looking for a job" },
-  { value: ROLES.RECRUITER, label: "Recruiter", hint: "I'm hiring talent" },
-];
-
 const RegisterPage = () => {
+  const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   const [apiError, setApiError] = useState("");
   const { register: registerUser } = useAuth();
   const navigate = useNavigate();
+
+  const registerSchema = useMemo(() => createRegisterSchema(t), [t, i18n.language]);
+
+  const ROLE_OPTIONS = useMemo(
+    () => [
+      { value: ROLES.JOB_SEEKER, label: t("auth.register.jobSeeker"), hint: t("auth.register.jobSeekerHint") },
+      { value: ROLES.RECRUITER, label: t("auth.register.recruiter"), hint: t("auth.register.recruiterHint") },
+    ],
+    [t]
+  );
 
   const {
     register,
@@ -44,7 +51,7 @@ const RegisterPage = () => {
     try {
       const { confirmPassword: _confirmPassword, ...payload } = data;
       const user = await registerUser(payload);
-      toast.success("Account created successfully!");
+      toast.success(t("auth.register.successToast"));
       navigate(DASHBOARD_BY_ROLE[user.role] || "/", { replace: true });
     } catch (err) {
       setApiError(err.message);
@@ -58,10 +65,8 @@ const RegisterPage = () => {
           <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary-600 text-white">
             <Briefcase className="h-6 w-6" />
           </span>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Create your account</h1>
-          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
-            Join JobologyX to get started
-          </p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t("auth.register.title")}</h1>
+          <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{t("auth.register.subtitle")}</p>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 dark:border-slate-800 dark:bg-slate-900">
@@ -74,7 +79,7 @@ const RegisterPage = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
             <div>
               <span className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                I am a
+                {t("auth.register.iAmA")}
               </span>
               <div className="grid grid-cols-2 gap-3">
                 {ROLE_OPTIONS.map((opt) => (
@@ -101,27 +106,27 @@ const RegisterPage = () => {
             </div>
 
             <Input
-              label="Full Name"
+              label={t("auth.register.fullNameLabel")}
               autoComplete="name"
-              placeholder="Jane Doe"
+              placeholder={t("auth.register.namePlaceholder")}
               error={errors.name?.message}
               {...register("name")}
             />
 
             <Input
-              label="Email"
+              label={t("auth.register.emailLabel")}
               type="email"
               autoComplete="email"
-              placeholder="you@example.com"
+              placeholder={t("auth.register.emailPlaceholder")}
               error={errors.email?.message}
               {...register("email")}
             />
 
             <Input
-              label="Password"
+              label={t("auth.register.passwordLabel")}
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
-              placeholder="At least 6 characters"
+              placeholder={t("auth.register.passwordPlaceholder")}
               error={errors.password?.message}
               endAdornment={
                 <button
@@ -129,7 +134,7 @@ const RegisterPage = () => {
                   onClick={() => setShowPassword((v) => !v)}
                   className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                   tabIndex={-1}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? t("auth.login.hidePassword") : t("auth.login.showPassword")}
                 >
                   {showPassword ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
                 </button>
@@ -138,24 +143,24 @@ const RegisterPage = () => {
             />
 
             <Input
-              label="Confirm Password"
+              label={t("auth.register.confirmPasswordLabel")}
               type={showPassword ? "text" : "password"}
               autoComplete="new-password"
-              placeholder="Re-enter your password"
+              placeholder={t("auth.register.confirmPasswordPlaceholder")}
               error={errors.confirmPassword?.message}
               {...register("confirmPassword")}
             />
 
             <Button type="submit" className="w-full" loading={isSubmitting}>
-              Create Account
+              {t("auth.register.submit")}
             </Button>
           </form>
         </div>
 
         <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
-          Already have an account?{" "}
+          {t("auth.register.haveAccount")}{" "}
           <Link to="/login" className="font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400">
-            Log in
+            {t("auth.register.logIn")}
           </Link>
         </p>
       </div>

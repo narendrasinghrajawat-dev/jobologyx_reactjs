@@ -1,19 +1,21 @@
 import { z } from "zod";
 
-export const loginSchema = z.object({
-  email: z.string().trim().min(1, "Email is required").email("Enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-export const registerSchema = z
-  .object({
-    name: z.string().trim().min(2, "Name must be at least 2 characters"),
-    email: z.string().trim().min(1, "Email is required").email("Enter a valid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-    role: z.enum(["job_seeker", "recruiter"], { message: "Select a role" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+export const createLoginSchema = (t) =>
+  z.object({
+    email: z.string().trim().min(1, t("validation.emailRequired")).email(t("validation.emailInvalid")),
+    password: z.string().min(1, t("validation.passwordRequired")),
   });
+
+export const createRegisterSchema = (t) =>
+  z
+    .object({
+      name: z.string().trim().min(2, t("validation.nameMin")),
+      email: z.string().trim().min(1, t("validation.emailRequired")).email(t("validation.emailInvalid")),
+      password: z.string().min(6, t("validation.passwordMin")),
+      confirmPassword: z.string().min(1, t("validation.confirmRequired")),
+      role: z.enum(["job_seeker", "recruiter"], { message: t("validation.roleRequired") }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("validation.passwordMismatch"),
+      path: ["confirmPassword"],
+    });

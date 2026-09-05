@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { FileText } from "lucide-react";
 import { fetchRecruiterApplications, updateApplicationStatus } from "../../store/slices/applicationSlice";
 import * as jobApi from "../../services/jobApi";
-import { formatDate } from "../../utils/formatDate";
-import { APPLICATION_STATUSES } from "../../utils/constants";
+import { useFormatters } from "../../hooks/useFormatters";
+import { useApplicationStatusOptions } from "../../hooks/useOptions";
 import Card from "../../components/common/Card";
 import Select from "../../components/common/Select";
 import StatusBadge from "../../components/common/StatusBadge";
@@ -16,6 +17,9 @@ import { TableRowSkeleton } from "../../components/common/Skeleton";
 import Avatar from "../../components/common/Avatar";
 
 const RecruiterApplicationsPage = () => {
+  const { t } = useTranslation();
+  const { formatDate } = useFormatters();
+  const applicationStatusOptions = useApplicationStatusOptions();
   const dispatch = useDispatch();
   const { applications, pagination, loading, error } = useSelector((state) => state.applications);
   const [page, setPage] = useState(1);
@@ -44,9 +48,9 @@ const RecruiterApplicationsPage = () => {
     setUpdatingId(app._id);
     try {
       await dispatch(updateApplicationStatus({ id: app._id, status })).unwrap();
-      toast.success("Application status updated");
+      toast.success(t("recruiter.applications.statusUpdatedToast"));
     } catch (err) {
-      toast.error(err || "Failed to update status");
+      toast.error(err || t("recruiter.applications.statusErrorToast"));
     } finally {
       setUpdatingId(null);
     }
@@ -55,15 +59,13 @@ const RecruiterApplicationsPage = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Applications</h1>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Review and manage applicants for your job listings.
-        </p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t("recruiter.applications.title")}</h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t("recruiter.applications.subtitle")}</p>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:max-w-xl">
         <Select
-          placeholder="All Jobs"
+          placeholder={t("recruiter.applications.allJobs")}
           options={myJobs.map((j) => ({ value: j._id, label: j.title }))}
           value={jobFilter}
           onChange={(e) => {
@@ -72,8 +74,8 @@ const RecruiterApplicationsPage = () => {
           }}
         />
         <Select
-          placeholder="All Statuses"
-          options={APPLICATION_STATUSES}
+          placeholder={t("recruiter.applications.allStatuses")}
+          options={applicationStatusOptions}
           value={statusFilter}
           onChange={(e) => {
             setStatusFilter(e.target.value);
@@ -85,18 +87,22 @@ const RecruiterApplicationsPage = () => {
       {error ? (
         <ErrorState onRetry={load} />
       ) : !loading && applications.length === 0 ? (
-        <EmptyState icon={FileText} title="No applications found" description="Applications for your jobs will appear here." />
+        <EmptyState
+          icon={FileText}
+          title={t("recruiter.applications.noApplicationsTitle")}
+          description={t("recruiter.applications.noApplicationsDesc")}
+        />
       ) : (
         <Card className="overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-100 text-xs uppercase text-slate-400 dark:border-slate-800">
                 <tr>
-                  <th className="px-4 py-3 font-medium">Applicant</th>
-                  <th className="px-4 py-3 font-medium">Job</th>
-                  <th className="px-4 py-3 font-medium">Applied</th>
-                  <th className="px-4 py-3 font-medium">Resume</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">{t("recruiter.applications.colApplicant")}</th>
+                  <th className="px-4 py-3 font-medium">{t("recruiter.applications.colJob")}</th>
+                  <th className="px-4 py-3 font-medium">{t("recruiter.applications.colApplied")}</th>
+                  <th className="px-4 py-3 font-medium">{t("recruiter.applications.colResume")}</th>
+                  <th className="px-4 py-3 font-medium">{t("recruiter.applications.colStatus")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -125,19 +131,19 @@ const RecruiterApplicationsPage = () => {
                               rel="noreferrer"
                               className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-400"
                             >
-                              View
+                              {t("recruiter.applications.viewResume")}
                             </a>
                           ) : (
-                            "—"
+                            t("common.notAvailable")
                           )}
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
                             <StatusBadge status={app.status} />
                             <Select
-                              options={APPLICATION_STATUSES}
+                              options={applicationStatusOptions}
                               value=""
-                              placeholder="Change"
+                              placeholder={t("recruiter.applications.changeStatus")}
                               disabled={updatingId === app._id}
                               onChange={(e) => e.target.value && handleStatusChange(app, e.target.value)}
                               className="!w-32 !py-1.5 text-xs"

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const getPageNumbers = (page, totalPages) => {
@@ -8,17 +9,18 @@ const getPageNumbers = (page, totalPages) => {
 };
 
 const Pagination = ({ page, totalPages, onPageChange }) => {
+  const { t } = useTranslation();
   if (totalPages <= 1) return null;
 
   const pageNumbers = getPageNumbers(page, totalPages);
 
   return (
-    <nav className="flex items-center justify-center gap-1.5" aria-label="Pagination">
+    <nav className="flex items-center justify-center gap-1.5" aria-label={t("common.pagination")}>
       <button
         type="button"
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
-        aria-label="Previous page"
+        aria-label={t("common.previousPage")}
         className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
       >
         <ChevronLeft className="h-4 w-4" />
@@ -50,7 +52,7 @@ const Pagination = ({ page, totalPages, onPageChange }) => {
         type="button"
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
-        aria-label="Next page"
+        aria-label={t("common.nextPage")}
         className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-slate-600 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
       >
         <ChevronRight className="h-4 w-4" />

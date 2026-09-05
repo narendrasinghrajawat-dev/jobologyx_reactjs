@@ -4,40 +4,14 @@ export const ROLES = {
   ADMIN: "admin",
 };
 
-export const JOB_TYPES = [
-  { value: "full_time", label: "Full-time" },
-  { value: "part_time", label: "Part-time" },
-  { value: "contract", label: "Contract" },
-  { value: "internship", label: "Internship" },
-  { value: "freelance", label: "Freelance" },
-];
-
-export const WORK_MODES = [
-  { value: "onsite", label: "Onsite" },
-  { value: "remote", label: "Remote" },
-  { value: "hybrid", label: "Hybrid" },
-];
-
-export const JOB_STATUSES = [
-  { value: "active", label: "Active" },
-  { value: "closed", label: "Closed" },
-  { value: "draft", label: "Draft" },
-];
-
-export const APPLICATION_STATUSES = [
-  { value: "applied", label: "Applied" },
-  { value: "reviewing", label: "Reviewing" },
-  { value: "shortlisted", label: "Shortlisted" },
-  { value: "rejected", label: "Rejected" },
-  { value: "hired", label: "Hired" },
-];
-
-export const SORT_OPTIONS = [
-  { value: "latest", label: "Newest first" },
-  { value: "oldest", label: "Oldest first" },
-  { value: "salaryHigh", label: "Salary: High to Low" },
-  { value: "salaryLow", label: "Salary: Low to High" },
-];
+// Raw value lists — labels are resolved via translation, see hooks/useOptions.js
+export const JOB_TYPE_VALUES = ["full_time", "part_time", "contract", "internship", "freelance"];
+export const WORK_MODE_VALUES = ["onsite", "remote", "hybrid"];
+export const JOB_STATUS_VALUES = ["active", "closed", "draft"];
+export const APPLICATION_STATUS_VALUES = ["applied", "reviewing", "shortlisted", "rejected", "hired"];
+export const SORT_VALUES = ["latest", "oldest", "salaryHigh", "salaryLow"];
+export const ROLE_VALUES = [ROLES.JOB_SEEKER, ROLES.RECRUITER, ROLES.ADMIN];
 
 export const THEME_STORAGE_KEY = "jobologyx-theme";
 export const AUTH_TOKEN_KEY = "jobologyx-token";
+export const LANGUAGE_STORAGE_KEY = "jobologyx-language";

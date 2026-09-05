@@ -1,35 +1,37 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Briefcase, LogOut, Menu, X } from "lucide-react";
 import { useAuth } from "../../features/auth/useAuth";
 import { fetchMyProfile } from "../../store/slices/userSlice";
 import { ROLES } from "../../utils/constants";
 import ThemeToggle from "./ThemeToggle";
+import LanguageSwitcher from "./LanguageSwitcher";
 import Avatar from "../common/Avatar";
 import toast from "react-hot-toast";
 
 const NAV_BY_ROLE = {
   guest: [
-    { to: "/", label: "Home" },
-    { to: "/jobs", label: "Jobs" },
+    { to: "/", labelKey: "nav.home" },
+    { to: "/jobs", labelKey: "nav.jobs" },
   ],
   [ROLES.JOB_SEEKER]: [
-    { to: "/", label: "Home" },
-    { to: "/jobs", label: "Jobs" },
-    { to: "/seeker/applications", label: "My Applications" },
-    { to: "/seeker/dashboard", label: "Dashboard" },
+    { to: "/", labelKey: "nav.home" },
+    { to: "/jobs", labelKey: "nav.jobs" },
+    { to: "/seeker/applications", labelKey: "nav.myApplications" },
+    { to: "/seeker/dashboard", labelKey: "nav.dashboard" },
   ],
   [ROLES.RECRUITER]: [
-    { to: "/recruiter/dashboard", label: "Dashboard" },
-    { to: "/recruiter/jobs", label: "My Jobs" },
-    { to: "/recruiter/applications", label: "Applications" },
+    { to: "/recruiter/dashboard", labelKey: "nav.dashboard" },
+    { to: "/recruiter/jobs", labelKey: "nav.myJobs" },
+    { to: "/recruiter/applications", labelKey: "nav.applications" },
   ],
   [ROLES.ADMIN]: [
-    { to: "/admin/dashboard", label: "Dashboard" },
-    { to: "/admin/users", label: "Users" },
-    { to: "/admin/jobs", label: "Jobs" },
-    { to: "/admin/applications", label: "Applications" },
+    { to: "/admin/dashboard", labelKey: "nav.dashboard" },
+    { to: "/admin/users", labelKey: "nav.users" },
+    { to: "/admin/jobs", labelKey: "nav.jobs" },
+    { to: "/admin/applications", labelKey: "nav.applications" },
   ],
 };
 
@@ -39,6 +41,7 @@ const profilePathByRole = {
 };
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const profile = useSelector((state) => state.user.profile);
@@ -55,7 +58,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    toast.success("Logged out successfully");
+    toast.success(t("nav.loggedOut"));
     navigate("/login");
     setMobileOpen(false);
   };
@@ -67,7 +70,7 @@ const Navbar = () => {
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-white">
             <Briefcase className="h-4.5 w-4.5" />
           </span>
-          <span className="text-lg">JobologyX</span>
+          <span className="text-lg">{t("common.appName")}</span>
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
@@ -83,19 +86,20 @@ const Navbar = () => {
                 }`
               }
             >
-              {item.label}
+              {t(item.labelKey)}
             </NavLink>
           ))}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <LanguageSwitcher />
           <ThemeToggle />
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
               <Link
                 to={profilePathByRole[user?.role] || "/"}
                 className="flex items-center gap-2"
-                title="Profile"
+                title={t("nav.profile")}
               >
                 <Avatar src={profile?.profileImage} name={user?.name} size="sm" />
               </Link>
@@ -105,7 +109,7 @@ const Navbar = () => {
                 className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 <LogOut className="h-4 w-4" />
-                Logout
+                {t("nav.logout")}
               </button>
             </div>
           ) : (
@@ -114,13 +118,13 @@ const Navbar = () => {
                 to="/login"
                 className="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
               >
-                Login
+                {t("nav.login")}
               </Link>
               <Link
                 to="/register"
                 className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white hover:bg-primary-700"
               >
-                Register
+                {t("nav.register")}
               </Link>
             </div>
           )}
@@ -130,7 +134,7 @@ const Navbar = () => {
           type="button"
           className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 md:hidden dark:text-slate-300"
           onClick={() => setMobileOpen((v) => !v)}
-          aria-label="Toggle menu"
+          aria-label={t("nav.toggleMenu")}
         >
           {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -152,7 +156,7 @@ const Navbar = () => {
                   }`
                 }
               >
-                {item.label}
+                {t(item.labelKey)}
               </NavLink>
             ))}
             {isAuthenticated && (
@@ -161,12 +165,15 @@ const Navbar = () => {
                 onClick={() => setMobileOpen(false)}
                 className="rounded-lg px-3 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
               >
-                Profile
+                {t("nav.profile")}
               </NavLink>
             )}
           </nav>
           <div className="mt-3 flex items-center justify-between border-t border-slate-200 pt-3 dark:border-slate-800">
-            <ThemeToggle />
+            <div className="flex items-center gap-1">
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
             {isAuthenticated ? (
               <button
                 type="button"
@@ -174,19 +181,19 @@ const Navbar = () => {
                 className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 <LogOut className="h-4 w-4" />
-                Logout
+                {t("nav.logout")}
               </button>
             ) : (
               <div className="flex items-center gap-2">
                 <Link to="/login" onClick={() => setMobileOpen(false)} className="text-sm font-medium text-slate-600 dark:text-slate-300">
-                  Login
+                  {t("nav.login")}
                 </Link>
                 <Link
                   to="/register"
                   onClick={() => setMobileOpen(false)}
                   className="rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white"
                 >
-                  Register
+                  {t("nav.register")}
                 </Link>
               </div>
             )}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import {
   Search,
   Briefcase,
@@ -22,39 +23,28 @@ import { JobCardSkeleton } from "../../components/common/Skeleton";
 import Button from "../../components/common/Button";
 
 const CATEGORIES = [
-  { label: "Engineering", icon: Code2, category: "Engineering" },
-  { label: "Design", icon: Palette, category: "Design" },
-  { label: "Marketing", icon: Megaphone, category: "Marketing" },
-  { label: "Sales", icon: LineChart, category: "Sales" },
-  { label: "Customer Support", icon: Headset, category: "Customer Support" },
-  { label: "Operations", icon: Briefcase, category: "Operations" },
+  { labelKey: "home.categories.engineering", icon: Code2, category: "Engineering" },
+  { labelKey: "home.categories.design", icon: Palette, category: "Design" },
+  { labelKey: "home.categories.marketing", icon: Megaphone, category: "Marketing" },
+  { labelKey: "home.categories.sales", icon: LineChart, category: "Sales" },
+  { labelKey: "home.categories.customerSupport", icon: Headset, category: "Customer Support" },
+  { labelKey: "home.categories.operations", icon: Briefcase, category: "Operations" },
 ];
 
 const WHY_CHOOSE = [
-  {
-    icon: ShieldCheck,
-    title: "Verified Listings",
-    description: "Every job is posted by a vetted recruiter — no scams, no spam.",
-  },
-  {
-    icon: Zap,
-    title: "Fast Applications",
-    description: "Apply in seconds with your saved profile and resume.",
-  },
-  {
-    icon: Users,
-    title: "Built for Both Sides",
-    description: "Powerful tools for recruiters, a clean experience for job seekers.",
-  },
+  { icon: ShieldCheck, titleKey: "home.why.verifiedTitle", descKey: "home.why.verifiedDesc" },
+  { icon: Zap, titleKey: "home.why.fastTitle", descKey: "home.why.fastDesc" },
+  { icon: Users, titleKey: "home.why.bothTitle", descKey: "home.why.bothDesc" },
 ];
 
 const HOW_IT_WORKS = [
-  { icon: FileEdit, title: "Build Your Profile", description: "Add your skills, resume, and experience." },
-  { icon: Send, title: "Apply to Jobs", description: "Search, filter, and apply to roles that fit." },
-  { icon: CheckCircle2, title: "Get Hired", description: "Track your applications and land the offer." },
+  { icon: FileEdit, titleKey: "home.how.step1Title", descKey: "home.how.step1Desc" },
+  { icon: Send, titleKey: "home.how.step2Title", descKey: "home.how.step2Desc" },
+  { icon: CheckCircle2, titleKey: "home.how.step3Title", descKey: "home.how.step3Desc" },
 ];
 
 const HomePage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { jobs, loading } = useSelector((state) => state.jobs);
@@ -74,10 +64,10 @@ const HomePage = () => {
       <section className="border-b border-slate-200 bg-gradient-to-b from-primary-50 to-white dark:border-slate-800 dark:from-primary-950/30 dark:to-slate-950">
         <div className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 sm:py-24 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-5xl">
-            Find your next opportunity
+            {t("home.heroTitle")}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-base text-slate-600 dark:text-slate-400 sm:text-lg">
-            Search thousands of jobs from companies that are hiring right now.
+            {t("home.heroSubtitle")}
           </p>
 
           <form onSubmit={handleSearch} className="mx-auto mt-8 flex max-w-xl gap-2 rounded-xl bg-white p-2 shadow-sm dark:bg-slate-900">
@@ -87,19 +77,19 @@ const HomePage = () => {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Job title, company, or skill"
+                placeholder={t("home.searchPlaceholder")}
                 className="w-full rounded-lg border-0 bg-transparent py-2.5 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none dark:text-white"
               />
             </div>
             <Button type="submit" size="lg">
-              Search
+              {t("home.searchButton")}
             </Button>
           </form>
         </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-white">Popular Categories</h2>
+        <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-white">{t("home.popularCategories")}</h2>
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {CATEGORIES.map((cat) => (
             <Link
@@ -110,7 +100,7 @@ const HomePage = () => {
               <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
                 <cat.icon className="h-5 w-5" />
               </span>
-              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{cat.label}</span>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{t(cat.labelKey)}</span>
             </Link>
           ))}
         </div>
@@ -119,9 +109,9 @@ const HomePage = () => {
       <section className="bg-slate-50 py-16 dark:bg-slate-900/40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Featured Jobs</h2>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{t("home.featuredJobs")}</h2>
             <Link to="/jobs" className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400">
-              View all →
+              {t("home.viewAllJobs")}
             </Link>
           </div>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -133,15 +123,15 @@ const HomePage = () => {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-white">Why Choose JobologyX</h2>
+        <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-white">{t("home.whyChoose")}</h2>
         <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
           {WHY_CHOOSE.map((item) => (
-            <div key={item.title} className="text-center">
+            <div key={item.titleKey} className="text-center">
               <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-900/30 dark:text-primary-400">
                 <item.icon className="h-6 w-6" />
               </span>
-              <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-white">{item.title}</h3>
-              <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{item.description}</p>
+              <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-white">{t(item.titleKey)}</h3>
+              <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{t(item.descKey)}</p>
             </div>
           ))}
         </div>
@@ -149,15 +139,15 @@ const HomePage = () => {
 
       <section className="bg-slate-50 py-16 dark:bg-slate-900/40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-white">How It Works</h2>
+          <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-white">{t("home.howItWorks")}</h2>
           <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
             {HOW_IT_WORKS.map((step, idx) => (
-              <div key={step.title} className="text-center">
+              <div key={step.titleKey} className="text-center">
                 <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-600 text-sm font-bold text-white">
                   {idx + 1}
                 </span>
-                <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-white">{step.title}</h3>
-                <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{step.description}</p>
+                <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-white">{t(step.titleKey)}</h3>
+                <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{t(step.descKey)}</p>
               </div>
             ))}
           </div>
@@ -165,15 +155,11 @@ const HomePage = () => {
       </section>
 
       <section className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
-          Ready to take the next step?
-        </h2>
-        <p className="mt-3 text-sm text-slate-500 dark:text-slate-400 sm:text-base">
-          Join thousands of job seekers and recruiters already using JobologyX.
-        </p>
+        <h2 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">{t("home.ctaTitle")}</h2>
+        <p className="mt-3 text-sm text-slate-500 dark:text-slate-400 sm:text-base">{t("home.ctaSubtitle")}</p>
         <Link to="/register">
           <Button size="lg" className="mt-6">
-            Get Started — It's Free
+            {t("home.ctaButton")}
           </Button>
         </Link>
       </section>

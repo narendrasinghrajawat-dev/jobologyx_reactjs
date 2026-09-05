@@ -1,28 +1,32 @@
+import { useTranslation } from "react-i18next";
 import Badge from "./Badge";
 
-const APPLICATION_MAP = {
-  applied: { variant: "info", label: "Applied" },
-  reviewing: { variant: "warning", label: "Reviewing" },
-  shortlisted: { variant: "primary", label: "Shortlisted" },
-  rejected: { variant: "error", label: "Rejected" },
-  hired: { variant: "success", label: "Hired" },
+const APPLICATION_VARIANTS = {
+  applied: "info",
+  reviewing: "warning",
+  shortlisted: "primary",
+  rejected: "error",
+  hired: "success",
 };
 
-const JOB_MAP = {
-  active: { variant: "success", label: "Active" },
-  closed: { variant: "error", label: "Closed" },
-  draft: { variant: "slate", label: "Draft" },
+const JOB_VARIANTS = {
+  active: "success",
+  closed: "error",
+  draft: "slate",
 };
 
-const USER_MAP = {
-  true: { variant: "success", label: "Active" },
-  false: { variant: "error", label: "Inactive" },
+const USER_VARIANTS = {
+  true: "success",
+  false: "error",
 };
 
 const StatusBadge = ({ status, type = "application" }) => {
-  const map = type === "job" ? JOB_MAP : type === "user" ? USER_MAP : APPLICATION_MAP;
-  const entry = map[status] || { variant: "slate", label: status };
-  return <Badge variant={entry.variant}>{entry.label}</Badge>;
+  const { t } = useTranslation();
+  const variants = type === "job" ? JOB_VARIANTS : type === "user" ? USER_VARIANTS : APPLICATION_VARIANTS;
+  const namespace = type === "job" ? "status.job" : type === "user" ? "status.user" : "status.application";
+  const variant = variants[status] || "slate";
+
+  return <Badge variant={variant}>{t(`${namespace}.${status}`, status)}</Badge>;
 };
 
 export default StatusBadge;

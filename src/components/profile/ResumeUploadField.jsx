@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { FileText, Upload } from "lucide-react";
 import Button from "../common/Button";
 
@@ -6,6 +7,7 @@ const MAX_SIZE_MB = 10;
 const ACCEPTED_TYPES = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
 
 const ResumeUploadField = ({ resumeUrl, uploading, onUpload }) => {
+  const { t } = useTranslation();
   const inputRef = useRef(null);
 
   const handleFileChange = (e) => {
@@ -14,11 +16,11 @@ const ResumeUploadField = ({ resumeUrl, uploading, onUpload }) => {
     if (!file) return;
 
     if (!ACCEPTED_TYPES.includes(file.type)) {
-      onUpload(null, "Please upload a PDF or Word document");
+      onUpload(null, t("profileFields.invalidResumeType"));
       return;
     }
     if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-      onUpload(null, `Resume must be under ${MAX_SIZE_MB}MB`);
+      onUpload(null, t("profileFields.resumeTooLarge", { size: MAX_SIZE_MB }));
       return;
     }
     onUpload(file);
@@ -32,7 +34,7 @@ const ResumeUploadField = ({ resumeUrl, uploading, onUpload }) => {
         </span>
         <div>
           <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            {resumeUrl ? "Current Resume" : "No resume uploaded"}
+            {resumeUrl ? t("profileFields.currentResume") : t("profileFields.noResumeUploaded")}
           </p>
           {resumeUrl && (
             <a
@@ -41,7 +43,7 @@ const ResumeUploadField = ({ resumeUrl, uploading, onUpload }) => {
               rel="noreferrer"
               className="text-xs text-primary-600 hover:underline dark:text-primary-400"
             >
-              View resume
+              {t("profileFields.viewResume")}
             </a>
           )}
         </div>
@@ -54,7 +56,7 @@ const ResumeUploadField = ({ resumeUrl, uploading, onUpload }) => {
         loading={uploading}
         onClick={() => inputRef.current?.click()}
       >
-        {resumeUrl ? "Replace Resume" : "Upload Resume"}
+        {resumeUrl ? t("profileFields.replaceResume") : t("profileFields.uploadResume")}
       </Button>
       <input
         ref={inputRef}

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 
 const DashboardShell = ({ navItems }) => {
+  const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -20,7 +22,7 @@ const DashboardShell = ({ navItems }) => {
               className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300"
             >
               <Menu className="h-5 w-5" />
-              Menu
+              {t("nav.menu")}
             </button>
           </div>
           <main className="flex-1 p-4 sm:p-6 lg:p-8">

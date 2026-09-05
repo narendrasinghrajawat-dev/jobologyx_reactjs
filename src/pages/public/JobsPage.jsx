@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { SearchX } from "lucide-react";
 import { fetchJobs } from "../../store/slices/jobSlice";
 import { useDebounce } from "../../hooks/useDebounce";
@@ -24,6 +25,7 @@ const EMPTY_FILTERS = {
 };
 
 const JobsPage = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { jobs, pagination, loading, error } = useSelector((state) => state.jobs);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -67,9 +69,9 @@ const JobsPage = () => {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Browse Jobs</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t("jobs.title")}</h1>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          {pagination.total} opportunities waiting for you
+          {t("jobs.subtitle", { count: pagination.total })}
         </p>
       </div>
 
@@ -88,9 +90,9 @@ const JobsPage = () => {
       ) : jobs.length === 0 ? (
         <EmptyState
           icon={SearchX}
-          title="No jobs found"
-          description="Try adjusting your search or filters to find more opportunities."
-          actionLabel="Clear Filters"
+          title={t("jobs.noJobsFoundTitle")}
+          description={t("jobs.noJobsFoundDesc")}
+          actionLabel={t("jobs.clearFilters")}
           onAction={clearFilters}
         />
       ) : (

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import Modal from "./Modal";
 import Button from "./Button";
 
@@ -5,24 +6,28 @@ const ConfirmDialog = ({
   open,
   onClose,
   onConfirm,
-  title = "Are you sure?",
+  title,
   description,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel,
+  cancelLabel,
   variant = "danger",
   loading = false,
-}) => (
-  <Modal open={open} onClose={onClose} title={title} className="max-w-md">
-    {description && <p className="text-sm text-slate-600 dark:text-slate-400">{description}</p>}
-    <div className="mt-6 flex justify-end gap-3">
-      <Button variant="secondary" onClick={onClose} disabled={loading}>
-        {cancelLabel}
-      </Button>
-      <Button variant={variant} onClick={onConfirm} loading={loading}>
-        {confirmLabel}
-      </Button>
-    </div>
-  </Modal>
-);
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <Modal open={open} onClose={onClose} title={title ?? t("common.areYouSure")} className="max-w-md">
+      {description && <p className="text-sm text-slate-600 dark:text-slate-400">{description}</p>}
+      <div className="mt-6 flex justify-end gap-3">
+        <Button variant="secondary" onClick={onClose} disabled={loading}>
+          {cancelLabel ?? t("common.cancel")}
+        </Button>
+        <Button variant={variant} onClick={onConfirm} loading={loading}>
+          {confirmLabel ?? t("common.confirm")}
+        </Button>
+      </div>
+    </Modal>
+  );
+};
 
 export default ConfirmDialog;

@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Briefcase, CheckCircle2, FileText, Clock } from "lucide-react";
 import { fetchJobs } from "../../store/slices/jobSlice";
 import { fetchRecruiterApplications } from "../../store/slices/applicationSlice";
-import { formatDate } from "../../utils/formatDate";
-import { APPLICATION_STATUSES } from "../../utils/constants";
+import { useFormatters } from "../../hooks/useFormatters";
+import { useApplicationStatusOptions } from "../../hooks/useOptions";
 import Card from "../../components/common/Card";
 import StatusBadge from "../../components/common/StatusBadge";
 import EmptyState from "../../components/common/EmptyState";
@@ -14,6 +15,9 @@ import EmptyState from "../../components/common/EmptyState";
 const STAT_COLOR = "text-primary-600 bg-primary-50 dark:bg-primary-900/30 dark:text-primary-400";
 
 const RecruiterDashboardPage = () => {
+  const { t } = useTranslation();
+  const { formatDate } = useFormatters();
+  const applicationStatusOptions = useApplicationStatusOptions();
   const dispatch = useDispatch();
   const { jobs } = useSelector((state) => state.jobs);
   const { applications } = useSelector((state) => state.applications);
@@ -32,25 +36,27 @@ const RecruiterDashboardPage = () => {
 
   const chartData = useMemo(
     () =>
-      APPLICATION_STATUSES.map((s) => ({
+      applicationStatusOptions.map((s) => ({
         name: s.label,
         count: applications.filter((a) => a.status === s.value).length,
       })),
-    [applications]
+    [applications, applicationStatusOptions]
   );
 
   const STAT_CARDS = [
-    { label: "Total Jobs", value: stats.totalJobs, icon: Briefcase },
-    { label: "Active Jobs", value: stats.activeJobs, icon: CheckCircle2 },
-    { label: "Total Applications", value: stats.totalApplications, icon: FileText },
-    { label: "Pending Review", value: stats.pending, icon: Clock },
+    { label: t("recruiter.dashboard.statTotalJobs"), value: stats.totalJobs, icon: Briefcase },
+    { label: t("recruiter.dashboard.statActiveJobs"), value: stats.activeJobs, icon: CheckCircle2 },
+    { label: t("recruiter.dashboard.statTotalApplications"), value: stats.totalApplications, icon: FileText },
+    { label: t("recruiter.dashboard.statPendingReview"), value: stats.pending, icon: Clock },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Welcome back, {user?.name?.split(" ")[0]}</h1>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Here's how your job listings are performing.</p>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          {t("recruiter.dashboard.welcome", { name: user?.name?.split(" ")[0] })}
+        </h1>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t("recruiter.dashboard.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -66,7 +72,7 @@ const RecruiterDashboardPage = () => {
       </div>
 
       <Card className="p-6">
-        <h2 className="mb-4 text-base font-semibold text-slate-900 dark:text-white">Applications by Status</h2>
+        <h2 className="mb-4 text-base font-semibold text-slate-900 dark:text-white">{t("recruiter.dashboard.applicationsByStatus")}</h2>
         <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
@@ -86,20 +92,22 @@ const RecruiterDashboardPage = () => {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white">Recent Jobs</h2>
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white">{t("recruiter.dashboard.recentJobs")}</h2>
             <Link to="/recruiter/jobs" className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400">
-              View all →
+              {t("home.viewAllJobs")}
             </Link>
           </div>
           {jobs.length === 0 ? (
-            <EmptyState title="No jobs yet" description="Post your first job to get started." />
+            <EmptyState title={t("recruiter.dashboard.noJobsTitle")} description={t("recruiter.dashboard.noJobsDesc")} />
           ) : (
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {jobs.slice(0, 5).map((job) => (
                 <div key={job._id} className="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-slate-800 dark:text-slate-200">{job.title}</p>
-                    <p className="truncate text-xs text-slate-500 dark:text-slate-400">Posted {formatDate(job.createdAt)}</p>
+                    <p className="truncate text-xs text-slate-500 dark:text-slate-400">
+                      {t("recruiter.dashboard.postedPrefix")} {formatDate(job.createdAt)}
+                    </p>
                   </div>
                   <StatusBadge status={job.status} type="job" />
                 </div>
@@ -110,13 +118,13 @@ const RecruiterDashboardPage = () => {
 
         <Card className="p-6">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white">Recent Applications</h2>
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white">{t("recruiter.dashboard.recentApplications")}</h2>
             <Link to="/recruiter/applications" className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400">
-              View all →
+              {t("home.viewAllJobs")}
             </Link>
           </div>
           {applications.length === 0 ? (
-            <EmptyState title="No applications yet" description="Applications will appear here once seekers apply." />
+            <EmptyState title={t("recruiter.dashboard.noApplicationsTitle")} description={t("recruiter.dashboard.noApplicationsDesc")} />
           ) : (
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {applications.slice(0, 5).map((app) => (

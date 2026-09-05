@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Briefcase, MapPin, Wallet } from "lucide-react";
-import { ROLES, JOB_TYPES, WORK_MODES } from "../../utils/constants";
-import { formatRelativeDate } from "../../utils/formatDate";
+import { ROLES } from "../../utils/constants";
+import { useFormatters } from "../../hooks/useFormatters";
 import Badge from "../common/Badge";
 import Button from "../common/Button";
 import ApplyModal from "../applications/ApplyModal";
-
-const jobTypeLabel = (value) => JOB_TYPES.find((t) => t.value === value)?.label || value;
-const workModeLabel = (value) => WORK_MODES.find((m) => m.value === value)?.label || value;
 
 const formatSalary = (min, max) => {
   if (!min && !max) return null;
@@ -19,6 +17,8 @@ const formatSalary = (min, max) => {
 };
 
 const JobCard = ({ job }) => {
+  const { t } = useTranslation();
+  const { formatRelativeDate } = useFormatters();
   const [applyOpen, setApplyOpen] = useState(false);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const canApply = isAuthenticated && user?.role === ROLES.JOB_SEEKER;
@@ -63,8 +63,8 @@ const JobCard = ({ job }) => {
       </div>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
-        <Badge variant="primary">{jobTypeLabel(job.jobType)}</Badge>
-        <Badge variant="slate">{workModeLabel(job.workMode)}</Badge>
+        <Badge variant="primary">{t(`options.jobType.${job.jobType}`, job.jobType)}</Badge>
+        <Badge variant="slate">{t(`options.workMode.${job.workMode}`, job.workMode)}</Badge>
         {job.experience && <Badge variant="slate">{job.experience}</Badge>}
       </div>
 
@@ -79,22 +79,24 @@ const JobCard = ({ job }) => {
             </span>
           ))}
           {job.skills.length > 4 && (
-            <span className="text-xs text-slate-400">+{job.skills.length - 4} more</span>
+            <span className="text-xs text-slate-400">{t("jobs.moreSkills", { count: job.skills.length - 4 })}</span>
           )}
         </div>
       )}
 
       <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
-        <span className="text-xs text-slate-400">Posted {formatRelativeDate(job.createdAt)}</span>
+        <span className="text-xs text-slate-400">
+          {t("jobs.postedPrefix")} {formatRelativeDate(job.createdAt)}
+        </span>
         <div className="flex items-center gap-2">
           <Link to={`/jobs/${job._id}`}>
             <Button variant="secondary" size="sm">
-              View Details
+              {t("jobs.viewDetails")}
             </Button>
           </Link>
           {canApply && (
             <Button size="sm" onClick={() => setApplyOpen(true)}>
-              Apply
+              {t("jobs.apply")}
             </Button>
           )}
         </div>

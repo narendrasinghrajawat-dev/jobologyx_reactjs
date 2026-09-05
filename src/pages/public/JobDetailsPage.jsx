@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { Briefcase, Calendar, MapPin, Wallet, Building2, Clock } from "lucide-react";
 import { fetchJobById, clearCurrentJob } from "../../store/slices/jobSlice";
 import { getMyApplications } from "../../services/applicationApi";
-import { ROLES, JOB_TYPES, WORK_MODES } from "../../utils/constants";
-import { formatDate } from "../../utils/formatDate";
+import { ROLES } from "../../utils/constants";
+import { useFormatters } from "../../hooks/useFormatters";
 import PageLoader from "../../components/common/PageLoader";
 import ErrorState from "../../components/common/ErrorState";
 import Badge from "../../components/common/Badge";
@@ -13,17 +14,17 @@ import Button from "../../components/common/Button";
 import Card from "../../components/common/Card";
 import ApplyModal from "../../components/applications/ApplyModal";
 
-const jobTypeLabel = (value) => JOB_TYPES.find((t) => t.value === value)?.label || value;
-const workModeLabel = (value) => WORK_MODES.find((m) => m.value === value)?.label || value;
-
-const formatSalary = (min, max) => {
-  if (!min && !max) return "Not disclosed";
+const formatSalary = (min, max, t) => {
+  if (!min && !max) return t("jobDetails.notDisclosed");
   const fmt = (n) => (n >= 100000 ? `${(n / 100000).toFixed(1)}L` : n.toLocaleString());
-  if (min && max) return `₹${fmt(min)} - ₹${fmt(max)} / year`;
-  return `₹${fmt(min || max)} / year`;
+  const perYear = t("jobDetails.perYear");
+  if (min && max) return `₹${fmt(min)} - ₹${fmt(max)} ${perYear}`;
+  return `₹${fmt(min || max)} ${perYear}`;
 };
 
 const JobDetailsPage = () => {
+  const { t } = useTranslation();
+  const { formatDate } = useFormatters();
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const JobDetailsPage = () => {
   if (error || !job) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16">
-        <ErrorState title="Job not found" description="This job may have been removed." />
+        <ErrorState title={t("jobDetails.jobNotFoundTitle")} description={t("jobDetails.jobNotFoundDesc")} />
       </div>
     );
   }
@@ -68,7 +69,7 @@ const JobDetailsPage = () => {
     if (!isAuthenticated) {
       return (
         <Button className="w-full" onClick={() => navigate("/login", { state: { from: { pathname: `/jobs/${id}` } } })}>
-          Login to Apply
+          {t("jobDetails.loginToApply")}
         </Button>
       );
     }
@@ -76,20 +77,20 @@ const JobDetailsPage = () => {
     if (isClosed || deadlinePassed) {
       return (
         <Button className="w-full" disabled>
-          Applications Closed
+          {t("jobDetails.applicationsClosed")}
         </Button>
       );
     }
     if (hasApplied) {
       return (
         <Button className="w-full" variant="secondary" disabled>
-          Already Applied
+          {t("jobDetails.alreadyApplied")}
         </Button>
       );
     }
     return (
       <Button className="w-full" loading={checkingApplied} onClick={() => setApplyOpen(true)}>
-        Apply Now
+        {t("jobDetails.applyNow")}
       </Button>
     );
   };
@@ -120,43 +121,43 @@ const JobDetailsPage = () => {
         <div className="mt-6 grid grid-cols-2 gap-4 border-t border-slate-100 pt-6 dark:border-slate-800 sm:grid-cols-4">
           <div>
             <p className="flex items-center gap-1.5 text-xs text-slate-400">
-              <MapPin className="h-3.5 w-3.5" /> Location
+              <MapPin className="h-3.5 w-3.5" /> {t("jobDetails.location")}
             </p>
             <p className="mt-1 text-sm font-medium text-slate-800 dark:text-slate-200">{job.location}</p>
           </div>
           <div>
             <p className="flex items-center gap-1.5 text-xs text-slate-400">
-              <Wallet className="h-3.5 w-3.5" /> Salary
+              <Wallet className="h-3.5 w-3.5" /> {t("jobDetails.salary")}
             </p>
             <p className="mt-1 text-sm font-medium text-slate-800 dark:text-slate-200">
-              {formatSalary(job.salaryMin, job.salaryMax)}
+              {formatSalary(job.salaryMin, job.salaryMax, t)}
             </p>
           </div>
           <div>
             <p className="flex items-center gap-1.5 text-xs text-slate-400">
-              <Clock className="h-3.5 w-3.5" /> Posted
+              <Clock className="h-3.5 w-3.5" /> {t("jobDetails.posted")}
             </p>
             <p className="mt-1 text-sm font-medium text-slate-800 dark:text-slate-200">{formatDate(job.createdAt)}</p>
           </div>
           <div>
             <p className="flex items-center gap-1.5 text-xs text-slate-400">
-              <Calendar className="h-3.5 w-3.5" /> Deadline
+              <Calendar className="h-3.5 w-3.5" /> {t("jobDetails.deadline")}
             </p>
             <p className="mt-1 text-sm font-medium text-slate-800 dark:text-slate-200">
-              {job.applicationDeadline ? formatDate(job.applicationDeadline) : "Open"}
+              {job.applicationDeadline ? formatDate(job.applicationDeadline) : t("jobDetails.open")}
             </p>
           </div>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          <Badge variant="primary">{jobTypeLabel(job.jobType)}</Badge>
-          <Badge variant="slate">{workModeLabel(job.workMode)}</Badge>
+          <Badge variant="primary">{t(`options.jobType.${job.jobType}`, job.jobType)}</Badge>
+          <Badge variant="slate">{t(`options.workMode.${job.workMode}`, job.workMode)}</Badge>
           {job.experience && <Badge variant="slate">{job.experience}</Badge>}
           {job.category && <Badge variant="slate">{job.category}</Badge>}
         </div>
 
         <div className="mt-8">
-          <h2 className="text-base font-semibold text-slate-900 dark:text-white">Job Description</h2>
+          <h2 className="text-base font-semibold text-slate-900 dark:text-white">{t("jobDetails.descriptionTitle")}</h2>
           <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-slate-600 dark:text-slate-400">
             {job.description}
           </p>
@@ -164,7 +165,7 @@ const JobDetailsPage = () => {
 
         {job.skills?.length > 0 && (
           <div className="mt-8">
-            <h2 className="text-base font-semibold text-slate-900 dark:text-white">Skills</h2>
+            <h2 className="text-base font-semibold text-slate-900 dark:text-white">{t("jobDetails.skillsTitle")}</h2>
             <div className="mt-2 flex flex-wrap gap-2">
               {job.skills.map((skill) => (
                 <span
@@ -181,7 +182,7 @@ const JobDetailsPage = () => {
 
       <div className="mt-6 text-center">
         <Link to="/jobs" className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400">
-          ← Back to all jobs
+          {t("jobDetails.backToJobs")}
         </Link>
       </div>
 

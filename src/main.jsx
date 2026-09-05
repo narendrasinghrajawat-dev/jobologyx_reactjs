@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { store } from "./store/store";
 import { ThemeProvider } from "./hooks/ThemeProvider";
+import "./i18n/config";
 import "./index.css";
 import App from "./App.jsx";
 

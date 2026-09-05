@@ -1,16 +1,23 @@
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector } from "react-redux";
-import { jobSchema } from "../../schemas/jobSchemas";
-import { JOB_TYPES, WORK_MODES, JOB_STATUSES } from "../../utils/constants";
+import { useTranslation } from "react-i18next";
+import { createJobSchema } from "../../schemas/jobSchemas";
+import { useJobTypeOptions, useWorkModeOptions, useJobStatusOptions } from "../../hooks/useOptions";
 import Input from "../common/Input";
 import Select from "../common/Select";
 import Textarea from "../common/Textarea";
 import Button from "../common/Button";
 import Card from "../common/Card";
 
-const JobForm = ({ defaultValues, onSubmit, submitLabel = "Save" }) => {
+const JobForm = ({ defaultValues, onSubmit, submitLabel }) => {
+  const { t, i18n } = useTranslation();
   const profile = useSelector((state) => state.user.profile);
+  const jobTypeOptions = useJobTypeOptions();
+  const workModeOptions = useWorkModeOptions();
+  const jobStatusOptions = useJobStatusOptions();
+  const jobSchema = useMemo(() => createJobSchema(t), [t, i18n.language]);
 
   const {
     register,
@@ -65,9 +72,9 @@ const JobForm = ({ defaultValues, onSubmit, submitLabel = "Save" }) => {
             </div>
           )}
           <div>
-            <p className="text-xs text-slate-400">Posting as</p>
+            <p className="text-xs text-slate-400">{t("jobForm.postingAs")}</p>
             <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
-              {profile.companyName || "Set your company name in Profile"}
+              {profile.companyName || t("jobForm.setCompanyName")}
             </p>
           </div>
         </Card>
@@ -75,49 +82,59 @@ const JobForm = ({ defaultValues, onSubmit, submitLabel = "Save" }) => {
 
       <Card className="p-6">
         <form onSubmit={handleSubmit(submit)} className="space-y-5" noValidate>
-          <Input label="Job Title" error={errors.title?.message} {...register("title")} />
-          <Textarea label="Description" rows={6} error={errors.description?.message} {...register("description")} />
+          <Input label={t("jobForm.titleLabel")} error={errors.title?.message} {...register("title")} />
+          <Textarea label={t("jobForm.descriptionLabel")} rows={6} error={errors.description?.message} {...register("description")} />
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Input label="Location" error={errors.location?.message} {...register("location")} />
-            <Input label="Category" placeholder="e.g. Engineering" error={errors.category?.message} {...register("category")} />
+            <Input label={t("jobForm.locationLabel")} error={errors.location?.message} {...register("location")} />
+            <Input
+              label={t("jobForm.categoryLabel")}
+              placeholder={t("jobForm.categoryPlaceholder")}
+              error={errors.category?.message}
+              {...register("category")}
+            />
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Select
-              label="Job Type"
-              placeholder="Select job type"
-              options={JOB_TYPES}
+              label={t("jobForm.jobTypeLabel")}
+              placeholder={t("jobForm.jobTypePlaceholder")}
+              options={jobTypeOptions}
               error={errors.jobType?.message}
               {...register("jobType")}
             />
             <Select
-              label="Work Mode"
-              placeholder="Select work mode"
-              options={WORK_MODES}
+              label={t("jobForm.workModeLabel")}
+              placeholder={t("jobForm.workModePlaceholder")}
+              options={workModeOptions}
               error={errors.workMode?.message}
               {...register("workMode")}
             />
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Input label="Minimum Salary" type="number" min="0" error={errors.salaryMin?.message} {...register("salaryMin")} />
-            <Input label="Maximum Salary" type="number" min="0" error={errors.salaryMax?.message} {...register("salaryMax")} />
+            <Input label={t("jobForm.minSalaryLabel")} type="number" min="0" error={errors.salaryMin?.message} {...register("salaryMin")} />
+            <Input label={t("jobForm.maxSalaryLabel")} type="number" min="0" error={errors.salaryMax?.message} {...register("salaryMax")} />
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Input label="Experience" placeholder="e.g. 2-4 years" error={errors.experience?.message} {...register("experience")} />
-            <Input label="Application Deadline" type="date" error={errors.applicationDeadline?.message} {...register("applicationDeadline")} />
+            <Input
+              label={t("jobForm.experienceLabel")}
+              placeholder={t("jobForm.experiencePlaceholder")}
+              error={errors.experience?.message}
+              {...register("experience")}
+            />
+            <Input label={t("jobForm.deadlineLabel")} type="date" error={errors.applicationDeadline?.message} {...register("applicationDeadline")} />
           </div>
 
           <Input
-            label="Skills"
-            placeholder="React, Node.js, MongoDB (comma-separated)"
+            label={t("jobForm.skillsLabel")}
+            placeholder={t("jobForm.skillsPlaceholder")}
             error={errors.skillsInput?.message}
             {...register("skillsInput")}
           />
 
-          <Select label="Status" options={JOB_STATUSES} error={errors.status?.message} {...register("status")} />
+          <Select label={t("jobForm.statusLabel")} options={jobStatusOptions} error={errors.status?.message} {...register("status")} />
 
           <div className="flex justify-end pt-2">
             <Button type="submit" loading={isSubmitting}>
