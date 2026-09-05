@@ -303,6 +303,8 @@
     "currentResume": "वर्तमान रिज्यूमे",
     "noResumeUploaded": "कोई रिज्यूमे अपलोड नहीं किया गया",
     "viewResume": "रिज्यूमे देखें",
+    "view": "देखें",
+    "openInNewTab": "नए टैब में खोलें",
     "replaceResume": "रिज्यूमे बदलें",
     "uploadResume": "रिज्यूमे अपलोड करें",
     "invalidResumeType": "कृपया एक PDF या Word दस्तावेज़ अपलोड करें",

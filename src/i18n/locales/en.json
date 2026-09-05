@@ -303,6 +303,8 @@
     "currentResume": "Current Resume",
     "noResumeUploaded": "No resume uploaded",
     "viewResume": "View resume",
+    "view": "View",
+    "openInNewTab": "Open in new tab",
     "replaceResume": "Replace Resume",
     "uploadResume": "Upload Resume",
     "invalidResumeType": "Please upload a PDF or Word document",

@@ -303,6 +303,8 @@
     "currentResume": "CV actuel",
     "noResumeUploaded": "Aucun CV téléversé",
     "viewResume": "Voir le CV",
+    "view": "Voir",
+    "openInNewTab": "Ouvrir dans un nouvel onglet",
     "replaceResume": "Remplacer le CV",
     "uploadResume": "Téléverser un CV",
     "invalidResumeType": "Veuillez téléverser un document PDF ou Word",

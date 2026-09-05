@@ -125,7 +125,12 @@ const SeekerProfilePage = () => {
 
       <Card className="p-6">
         <h2 className="mb-4 text-base font-semibold text-slate-900 dark:text-white">{t("seeker.profile.resumeTitle")}</h2>
-        <ResumeUploadField resumeUrl={profile?.resumeUrl} uploading={uploading} onUpload={handleResumeUpload} />
+        <ResumeUploadField
+          resumeUrl={profile?.resumeUrl}
+          resumeFileName={profile?.resumeFileName}
+          uploading={uploading}
+          onUpload={handleResumeUpload}
+        />
       </Card>
 
       <Card className="p-6">
