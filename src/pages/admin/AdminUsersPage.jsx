@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { Users } from "lucide-react";
 import * as adminApi from "../../services/adminApi";
 import { useFormatters } from "../../hooks/useFormatters";
-import { useRoleOptions } from "../../hooks/useOptions";
+import { useRoleMasterOptions } from "../../hooks/useMasterDataOptions";
 import Card from "../../components/common/Card";
 import Select from "../../components/common/Select";
 import Badge from "../../components/common/Badge";
@@ -19,7 +19,7 @@ import { TableRowSkeleton } from "../../components/common/Skeleton";
 const AdminUsersPage = () => {
   const { t } = useTranslation();
   const { formatDate } = useFormatters();
-  const roleOptions = useRoleOptions();
+  const roleOptions = useRoleMasterOptions();
   const [users, setUsers] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [page, setPage] = useState(1);

@@ -7,6 +7,7 @@ import { Briefcase, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import { createRegisterSchema } from "../../schemas/authSchemas";
 import { useAuth } from "../../features/auth/useAuth";
+import { useRoleMasterOptions } from "../../hooks/useMasterDataOptions";
 import { ROLES } from "../../utils/constants";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
@@ -25,13 +26,28 @@ const RegisterPage = () => {
 
   const registerSchema = useMemo(() => createRegisterSchema(t), [t, i18n.language]);
 
-  const ROLE_OPTIONS = useMemo(
-    () => [
+  // Registration only ever offers job_seeker/recruiter — admin is never a
+  // public option. Options render master-data's `label`, but the value
+  // submitted is always the exact `name` string the backend validates.
+  const roleMasterOptions = useRoleMasterOptions();
+  const ROLE_OPTIONS = useMemo(() => {
+    const hints = {
+      [ROLES.JOB_SEEKER]: t("auth.register.jobSeekerHint"),
+      [ROLES.RECRUITER]: t("auth.register.recruiterHint"),
+    };
+    const fromMasterData = roleMasterOptions
+      .filter((r) => r.value === ROLES.JOB_SEEKER || r.value === ROLES.RECRUITER)
+      .map((r) => ({ value: r.value, label: r.label, hint: hints[r.value] }));
+
+    if (fromMasterData.length > 0) return fromMasterData;
+
+    // Master data hasn't loaded yet (or failed) — fall back so the page
+    // still works.
+    return [
       { value: ROLES.JOB_SEEKER, label: t("auth.register.jobSeeker"), hint: t("auth.register.jobSeekerHint") },
       { value: ROLES.RECRUITER, label: t("auth.register.recruiter"), hint: t("auth.register.recruiterHint") },
-    ],
-    [t]
-  );
+    ];
+  }, [roleMasterOptions, t]);
 
   const {
     register,

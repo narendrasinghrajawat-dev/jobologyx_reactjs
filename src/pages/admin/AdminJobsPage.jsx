@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { Briefcase, Eye } from "lucide-react";
 import * as adminApi from "../../services/adminApi";
 import { useFormatters } from "../../hooks/useFormatters";
-import { useJobStatusOptions } from "../../hooks/useOptions";
+import { useJobStatusMasterOptions } from "../../hooks/useMasterDataOptions";
 import Card from "../../components/common/Card";
 import Select from "../../components/common/Select";
 import StatusBadge from "../../components/common/StatusBadge";
@@ -18,7 +18,7 @@ import { TableRowSkeleton } from "../../components/common/Skeleton";
 const AdminJobsPage = () => {
   const { t } = useTranslation();
   const { formatDate } = useFormatters();
-  const jobStatusOptions = useJobStatusOptions();
+  const jobStatusOptions = useJobStatusMasterOptions();
   const [jobs, setJobs] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [page, setPage] = useState(1);

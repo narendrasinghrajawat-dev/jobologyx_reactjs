@@ -4,7 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { createJobSchema } from "../../schemas/jobSchemas";
-import { useJobTypeOptions, useWorkModeOptions, useJobStatusOptions } from "../../hooks/useOptions";
+import {
+  useJobTypeMasterOptions,
+  useWorkModeMasterOptions,
+  useJobStatusMasterOptions,
+  useCategoryMasterOptions,
+  useExperienceMasterOptions,
+} from "../../hooks/useMasterDataOptions";
 import Input from "../common/Input";
 import Select from "../common/Select";
 import Textarea from "../common/Textarea";
@@ -14,9 +20,11 @@ import Card from "../common/Card";
 const JobForm = ({ defaultValues, onSubmit, submitLabel }) => {
   const { t, i18n } = useTranslation();
   const profile = useSelector((state) => state.user.profile);
-  const jobTypeOptions = useJobTypeOptions();
-  const workModeOptions = useWorkModeOptions();
-  const jobStatusOptions = useJobStatusOptions();
+  const jobTypeOptions = useJobTypeMasterOptions();
+  const workModeOptions = useWorkModeMasterOptions();
+  const jobStatusOptions = useJobStatusMasterOptions();
+  const categoryOptions = useCategoryMasterOptions();
+  const experienceOptions = useExperienceMasterOptions();
   const jobSchema = useMemo(() => createJobSchema(t), [t, i18n.language]);
 
   const {
@@ -87,9 +95,10 @@ const JobForm = ({ defaultValues, onSubmit, submitLabel }) => {
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <Input label={t("jobForm.locationLabel")} error={errors.location?.message} {...register("location")} />
-            <Input
+            <Select
               label={t("jobForm.categoryLabel")}
               placeholder={t("jobForm.categoryPlaceholder")}
+              options={categoryOptions}
               error={errors.category?.message}
               {...register("category")}
             />
@@ -118,9 +127,10 @@ const JobForm = ({ defaultValues, onSubmit, submitLabel }) => {
           </div>
 
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <Input
+            <Select
               label={t("jobForm.experienceLabel")}
               placeholder={t("jobForm.experiencePlaceholder")}
+              options={experienceOptions}
               error={errors.experience?.message}
               {...register("experience")}
             />

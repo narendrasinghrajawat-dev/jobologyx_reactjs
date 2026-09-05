@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import AppRoutes from "./routes/AppRoutes";
 import { useAuth } from "./features/auth/useAuth";
 import { finishAuthCheck } from "./store/slices/authSlice";
+import { fetchMasterData } from "./store/slices/masterDataSlice";
 import { AUTH_TOKEN_KEY } from "./utils/constants";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
     } else {
       dispatch(finishAuthCheck());
     }
+    dispatch(fetchMasterData());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

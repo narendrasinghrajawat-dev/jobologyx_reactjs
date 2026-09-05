@@ -6,7 +6,7 @@ import { FileText } from "lucide-react";
 import { fetchRecruiterApplications, updateApplicationStatus } from "../../store/slices/applicationSlice";
 import * as jobApi from "../../services/jobApi";
 import { useFormatters } from "../../hooks/useFormatters";
-import { useApplicationStatusOptions } from "../../hooks/useOptions";
+import { useApplicationStatusMasterOptions } from "../../hooks/useMasterDataOptions";
 import Card from "../../components/common/Card";
 import Select from "../../components/common/Select";
 import StatusBadge from "../../components/common/StatusBadge";
@@ -19,7 +19,7 @@ import Avatar from "../../components/common/Avatar";
 const RecruiterApplicationsPage = () => {
   const { t } = useTranslation();
   const { formatDate } = useFormatters();
-  const applicationStatusOptions = useApplicationStatusOptions();
+  const applicationStatusOptions = useApplicationStatusMasterOptions();
   const dispatch = useDispatch();
   const { applications, pagination, loading, error } = useSelector((state) => state.applications);
   const [page, setPage] = useState(1);

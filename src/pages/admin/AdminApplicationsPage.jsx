@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { FileText } from "lucide-react";
 import * as adminApi from "../../services/adminApi";
 import { useFormatters } from "../../hooks/useFormatters";
-import { useApplicationStatusOptions } from "../../hooks/useOptions";
+import { useApplicationStatusMasterOptions } from "../../hooks/useMasterDataOptions";
 import Card from "../../components/common/Card";
 import Select from "../../components/common/Select";
 import StatusBadge from "../../components/common/StatusBadge";
@@ -15,7 +15,7 @@ import { TableRowSkeleton } from "../../components/common/Skeleton";
 const AdminApplicationsPage = () => {
   const { t } = useTranslation();
   const { formatDate } = useFormatters();
-  const applicationStatusOptions = useApplicationStatusOptions();
+  const applicationStatusOptions = useApplicationStatusMasterOptions();
   const [applications, setApplications] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [page, setPage] = useState(1);
