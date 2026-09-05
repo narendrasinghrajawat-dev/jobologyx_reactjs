@@ -19,6 +19,9 @@ env/.env.production
 .env
 .env.local
 
+# Vercel CLI project link (only created if you ever run `vercel` locally)
+.vercel
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
