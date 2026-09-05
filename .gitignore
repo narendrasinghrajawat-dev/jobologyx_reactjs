@@ -12,10 +12,12 @@ dist
 dist-ssr
 *.local
 
-# Environment variables (local overrides — .env.example is the tracked template)
+# Environment variables — real credentials live under env/, split by target.
+# Only the env/*.example templates are tracked; everything else here is not.
+env/.env.test
+env/.env.production
 .env
-.env.*
-!.env.example
+.env.local
 
 # Editor directories and files
 .vscode/*
