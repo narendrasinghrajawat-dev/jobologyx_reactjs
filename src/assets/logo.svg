@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" fill="none">
+  <defs>
+    <linearGradient id="jx-logo-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="50%" stop-color="#06B6D4" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    <linearGradient id="jx-logo-grad-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C3AED" />
+      <stop offset="50%" stop-color="#9333EA" />
+      <stop offset="100%" stop-color="#C084FC" />
+    </linearGradient>
+  </defs>
+
+  <!-- Logo Emblem -->
+  <g transform="translate(0, 0)">
+    <!-- J Stem -->
+    <path d="M 18 10 L 18 28 C 18 34 13 37 8 35 C 5.5 34 4 31.5 4 28.5" 
+          stroke="url(#jx-logo-grad-1)" 
+          stroke-width="4" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+    <circle cx="18" cy="7" r="2.5" fill="url(#jx-logo-grad-1)" />
+
+    <!-- X Diagonals -->
+    <path d="M 14 14 L 34 38" 
+          stroke="url(#jx-logo-grad-1)" 
+          stroke-width="4" 
+          stroke-linecap="round" />
+    <path d="M 16 38 L 38 12" 
+          stroke="url(#jx-logo-grad-2)" 
+          stroke-width="4" 
+          stroke-linecap="round" />
+
+    <!-- Upward Arrowhead -->
+    <path d="M 31 12 L 39 11 L 38 19" 
+          stroke="url(#jx-logo-grad-2)" 
+          stroke-width="3" 
+          stroke-linecap="round" 
+          stroke-linejoin="round" />
+
+    <!-- Nodes -->
+    <circle cx="27" cy="24.5" r="2.5" fill="#06B6D4" stroke="#FFFFFF" stroke-width="1" />
+  </g>
+
+  <!-- Typography: Jobology + Gradient X -->
+  <text x="50" y="32" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="800" letter-spacing="-0.5px">
+    <tspan fill="currentColor">Jobology</tspan>
+    <tspan fill="url(#jx-logo-grad-2)">X</tspan>
+  </text>
+</svg>

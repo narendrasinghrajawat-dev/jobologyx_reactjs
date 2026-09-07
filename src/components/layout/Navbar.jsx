@@ -9,6 +9,7 @@ import { ROLES } from "../../utils/constants";
 import ThemeToggle from "./ThemeToggle";
 import LanguageSwitcher from "./LanguageSwitcher";
 import Avatar from "../common/Avatar";
+import Logo from "../common/Logo";
 import toast from "react-hot-toast";
 
 const NAV_BY_ROLE = {
@@ -66,12 +67,7 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary-600 text-white">
-            <Briefcase className="h-4.5 w-4.5" />
-          </span>
-          <span className="text-lg">{t("common.appName")}</span>
-        </Link>
+        <Logo size="md" to="/" />
 
         <nav className="hidden items-center gap-1 md:flex">
           {navItems.map((item) => (

@@ -11,6 +11,7 @@ import { useRoleMasterOptions } from "../../hooks/useMasterDataOptions";
 import { ROLES } from "../../utils/constants";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+import Logo from "../../components/common/Logo";
 
 const DASHBOARD_BY_ROLE = {
   [ROLES.JOB_SEEKER]: "/seeker/dashboard",
@@ -78,9 +79,9 @@ const RegisterPage = () => {
     <div className="flex min-h-[80vh] items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center text-center">
-          <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-primary-600 text-white">
-            <Briefcase className="h-6 w-6" />
-          </span>
+          <div className="mb-3">
+            <Logo size="lg" showText={false} to="/" />
+          </div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{t("auth.register.title")}</h1>
           <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{t("auth.register.subtitle")}</p>
         </div>
